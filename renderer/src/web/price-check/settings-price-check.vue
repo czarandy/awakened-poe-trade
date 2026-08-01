@@ -44,10 +44,11 @@
       <div class="mb-4 flex">
         <div class="flex mr-6">
           <span class="mr-1">+-</span>
-          <input v-model.number="searchStatRange" class="rounded bg-gray-900 px-1 block w-16 mb-1 font-poe text-center" />
+          <input v-model.number="searchStatRangePercent" class="rounded bg-gray-900 px-1 block w-16 mb-1 font-poe text-center" />
           <span class="ml-1">%</span>
         </div>
-        <ui-radio v-model="searchStatRange" :value="0">{{ t(':fill_roll_exact') }}</ui-radio>
+        <ui-radio v-model="searchStatRange" :value="0" class="mr-4">{{ t(':fill_roll_exact') }}</ui-radio>
+        <ui-radio v-model="searchStatRange" :value="STAT_RANGE_ROUND">{{ t(':fill_roll_round') }}</ui-radio>
       </div>
     </div>
     <ui-checkbox class="mb-4"
@@ -105,6 +106,7 @@ import UiErrorBox from '@/web/ui/UiErrorBox.vue'
 import OnlineFilterCore from './trade/OnlineFilterCore.vue'
 import { ItemFilters } from './filters/interfaces.js'
 import { configModelValue, configProp, findWidget } from '../settings/utils.js'
+import { STAT_RANGE_ROUND } from './filters/util'
 import type { PriceCheckWidget } from '@/web/overlay/interfaces'
 import { useLeagues } from '../background/Leagues'
 
@@ -140,9 +142,24 @@ export default defineComponent({
       hotkeyLocked: computed(() => configWidget.value.hotkeyLocked),
       smartInitialSearch: configModelValue(() => configWidget.value, 'smartInitialSearch'),
       lockedInitialSearch: configModelValue(() => configWidget.value, 'lockedInitialSearch'),
+      STAT_RANGE_ROUND,
       searchStatRange: computed<number>({
         get () {
           return configWidget.value.searchStatRange
+        },
+        set (value) {
+          if (typeof value !== 'number') return
+
+          if (value === STAT_RANGE_ROUND || (value >= 0 && value <= 50)) {
+            configWidget.value.searchStatRange = value
+          }
+        }
+      }),
+      // Blank rather than showing the sentinel as "-1 %" in the percent box.
+      searchStatRangePercent: computed<number | string>({
+        get () {
+          const value = configWidget.value.searchStatRange
+          return (value === STAT_RANGE_ROUND) ? '' : value
         },
         set (value) {
           if (typeof value !== 'number') return
