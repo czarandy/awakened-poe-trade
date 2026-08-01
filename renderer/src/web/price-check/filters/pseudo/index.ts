@@ -46,7 +46,6 @@ interface PseudoRule {
 const PSEUDO_RULES: PseudoRule[] = [
   {
     pseudo: stat('+#% total Elemental Resistance'),
-    disabled: false,
     stats:
       RESISTANCES_INFO.filter(info => info.elements.length)
         .map(info => ({ ref: info.ref, multiplier: info.elements.length, keep: info.chaos }))
@@ -82,8 +81,6 @@ const PSEUDO_RULES: PseudoRule[] = [
           filter.sources[0].modifier.info.type === ModifierType.Crafted
       ) {
         filter.hidden = 'filters.hide_crafted_chaos'
-      } else {
-        filter.disabled = false
       }
     }
   },
@@ -118,7 +115,6 @@ const PSEUDO_RULES: PseudoRule[] = [
   },
   {
     pseudo: stat('+# total maximum Life'),
-    disabled: false,
     stats: [
       { ref: stat('+# to maximum Life'), required: true },
       ...ATTRIBUTES_INFO.filter(info => info.attributes.includes('str'))
