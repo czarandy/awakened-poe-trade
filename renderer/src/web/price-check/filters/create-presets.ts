@@ -9,7 +9,7 @@ const ROMAN_NUMERALS = ['I', 'II', 'III', 'IV', 'V']
 
 type CreatePresetsOptions =
   & Omit<CreateFiltersOptions, 'exact'>
-  & { searchStatRange: number }
+  & { searchStatRange: number, defaultEnabledStats: string[] }
 
 export function createPresets (
   item: ParsedItem,
