@@ -1,6 +1,7 @@
 {
-  "name": "awakened-poe-trade",
-  "version": "3.29.102",
+  "name": "silver-poe-trade",
+  "productName": "Silver PoE Trade",
+  "version": "3.29.102-silver.1",
   "private": true,
   "scripts": {
     "dev": "node build/script.mjs",
