@@ -450,6 +450,11 @@ function finalFilterTweaks (ctx: FiltersCreationContext) {
 
   if (item.category === ItemCategory.ClusterJewel && item.rarity !== ItemRarity.Unique) {
     applyClusterJewelRules(ctx.filters)
+  } else if (
+    (item.category === ItemCategory.Jewel || item.category === ItemCategory.AbyssJewel) &&
+    item.rarity !== ItemRarity.Unique
+  ) {
+    applyJewelRules(ctx.filters)
   } else if (item.category === ItemCategory.Flask) {
     applyFlaskRules(ctx.filters)
     applyFlaskHybridMod(ctx)
@@ -578,6 +583,21 @@ function showHasEmptyModifier (ctx: FiltersCreationContext): ItemHasEmptyModifie
   }
 
   return false
+}
+
+// The mods that carry most of a jewel's price. Everything else on a jewel
+// stays opt-in, same as other item types.
+function applyJewelRules (filters: StatFilter[]) {
+  for (const filter of filters) {
+    if (filter.hidden) continue
+
+    if (
+      filter.statRef === '#% increased maximum Life' ||
+      filter.statRef.includes('Critical Strike Multiplier')
+    ) {
+      filter.disabled = false
+    }
+  }
 }
 
 function enableAllFilters (filters: StatFilter[]) {
