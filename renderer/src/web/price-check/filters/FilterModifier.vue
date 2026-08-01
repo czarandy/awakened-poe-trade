@@ -52,6 +52,11 @@
               }]">{{ option.text }}</button>
           </div>
         </slot>
+        <button v-if="canPin" type="button" @click="togglePinned"
+          :class="[$style.pin, 'ml-auto', { [$style.pinActive]: isPinned }]"
+          :title="isPinned ? t('filters.unpin_default') : t('filters.pin_default')">
+          <i class="fas fa-thumbtack" />
+        </button>
       </div>
       <div class="flex pt-px" v-if="!miniFilter">
         <div class="w-5 flex items-start">
@@ -100,6 +105,7 @@ import FilterModifierTiers from './FilterModifierTiers.vue'
 import { AppConfig } from '@/web/Config'
 import { ItemCategory, ItemRarity, ParsedItem } from '@/parser'
 import { FilterTag, StatFilter, INTERNAL_TRADE_IDS } from './interfaces'
+import type { PriceCheckWidget } from '@/web/overlay/widgets'
 import SourceInfo from './SourceInfo.vue'
 import { SearchMode as MercSearchMode } from './pseudo/mercenary.js'
 
@@ -318,13 +324,40 @@ export default defineComponent({
       handleOptionClick,
       toggleFilter,
       toggleExpanded,
-      smartToggle
+      smartToggle,
+      canPin: computed(() =>
+        !INTERNAL_TRADE_IDS.includes(props.filter.tradeId[0]) &&
+        props.filter.tag !== FilterTag.Property),
+      isPinned: computed(() =>
+        pinnedStats().includes(props.filter.statRef)),
+      togglePinned () {
+        const pinned = pinnedStats()
+        const at = pinned.indexOf(props.filter.statRef)
+        if (at === -1) {
+          pinned.push(props.filter.statRef)
+          props.filter.disabled = false
+        } else {
+          pinned.splice(at, 1)
+        }
+      }
     }
   }
 })
+
+function pinnedStats (): string[] {
+  return AppConfig<PriceCheckWidget>('price-check')!.defaultEnabledStats
+}
 </script>
 
 <style lang="postcss" module>
+.pin {
+  @apply text-xs leading-none px-1 text-gray-700;
+}
+.pin:hover,
+.pinActive {
+  @apply text-gray-400;
+}
+
 .filter {
   padding: theme('spacing.2') 0;
   border-bottom: 1px solid theme('colors.gray.700');

@@ -15,6 +15,7 @@ import { StatBetter, CLIENT_STRINGS } from '@/assets/data'
 export interface FiltersCreationContext {
   readonly item: ParsedItem
   readonly searchInRange: number
+  readonly defaultEnabledStats: string[]
   filters: StatFilter[]
   statsByType: StatCalculated[]
 }
@@ -22,7 +23,7 @@ export interface FiltersCreationContext {
 export function createExactStatFilters (
   item: ParsedItem,
   statsByType: StatCalculated[],
-  opts: { searchStatRange: number, mode?: 'props' | 'bulk' }
+  opts: { searchStatRange: number, defaultEnabledStats: string[], mode?: 'props' | 'bulk' }
 ): StatFilter[] {
   if (
     item.mapBlighted ||
@@ -65,6 +66,7 @@ export function createExactStatFilters (
 
   const ctx: FiltersCreationContext = {
     item,
+    defaultEnabledStats: opts.defaultEnabledStats,
     searchInRange: (opts.mode !== 'props')
       ? Math.min(2, opts.searchStatRange)
       : opts.searchStatRange,
@@ -145,11 +147,13 @@ export function initUiModFilters (
   item: ParsedItem,
   opts: {
     searchStatRange: number
+    defaultEnabledStats: string[]
   }
 ): StatFilter[] {
   const ctx: FiltersCreationContext = {
     item,
     filters: [],
+    defaultEnabledStats: opts.defaultEnabledStats,
     searchInRange: (item.rarity === ItemRarity.Normal) ? 100 : opts.searchStatRange,
     statsByType: item.statsByType.map(calc => {
       if (calc.type === ModifierType.Fractured && calc.stat.trade.ids[ModifierType.Explicit]) {
@@ -499,6 +503,12 @@ function finalFilterTweaks (ctx: FiltersCreationContext) {
       filter.tag === FilterTag.Vestigial ||
       filter.tag === FilterTag.Variant
     ) {
+      filter.disabled = false
+    }
+  }
+
+  for (const filter of ctx.filters) {
+    if (!filter.hidden && ctx.defaultEnabledStats.includes(filter.statRef)) {
       filter.disabled = false
     }
   }
