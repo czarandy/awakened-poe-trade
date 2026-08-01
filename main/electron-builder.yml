@@ -1,6 +1,9 @@
 publish:
-  - "github"
-productName: "Awakened PoE Trade"
+  - provider: "github"
+    owner: "czarandy"
+    repo: "awakened-poe-trade"
+appId: "com.czarandy.silver-poe-trade"
+productName: "Silver PoE Trade"
 npmRebuild: false
 toolsets:
   appimage: 1.0.3
