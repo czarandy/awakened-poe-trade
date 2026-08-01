@@ -51,6 +51,17 @@
         <ui-radio v-model="searchStatRange" :value="STAT_RANGE_ROUND">{{ t(':fill_roll_round') }}</ui-radio>
       </div>
     </div>
+    <div class="mb-4">
+      <div class="flex-1 mb-1">{{ t(':default_enabled') }}</div>
+      <div class="mb-1 italic text-gray-500">{{ t(':default_enabled_hint') }}</div>
+      <div v-if="!defaultEnabledStats.length" class="text-gray-500">{{ t(':default_enabled_empty') }}</div>
+      <div v-for="statRef of defaultEnabledStats" :key="statRef"
+        class="flex items-baseline gap-x-2 mb-px">
+        <button type="button" class="text-gray-500 hover:text-red-400"
+          @click="removeDefaultStat(statRef)"><i class="fas fa-times"></i></button>
+        <span class="font-poe truncate">{{ statRef }}</span>
+      </div>
+    </div>
     <!-- <ui-checkbox class="mb-4"
       v-model="rememberCurrency">{{ t(':remember_currency') }}</ui-checkbox> -->
     <ui-checkbox class="mb-4"
@@ -139,6 +150,12 @@ export default defineComponent({
       lockedInitialSearch: configModelValue(() => configWidget.value, 'lockedInitialSearch'),
       rememberCurrency: configModelValue(() => configWidget.value, 'rememberCurrency'),
       STAT_RANGE_ROUND,
+      defaultEnabledStats: computed(() => configWidget.value.defaultEnabledStats),
+      removeDefaultStat (statRef: string) {
+        const pinned = configWidget.value.defaultEnabledStats
+        const at = pinned.indexOf(statRef)
+        if (at !== -1) pinned.splice(at, 1)
+      },
       searchStatRange: computed<number>({
         get () {
           return configWidget.value.searchStatRange
