@@ -71,6 +71,8 @@ export interface BaseType {
   tradeTag?: string
   exchangeable?: true
   tradeDisc?: string
+  // trade api `type` value, when it is not the item's name
+  tradeType?: string
   disc?: {
     propAR?: true
     propEV?: true
@@ -216,6 +218,7 @@ export interface TranslationDict {
   ELDRITCH_MOD_R5: string
   ELDRITCH_MOD_R6: string
   SENTINEL_CHARGE: string
+  MAP_AREA: string
   SHAPER_MODS: string[]
   ELDER_MODS: string[]
   CRUSADER_MODS: string[]
