@@ -36,8 +36,7 @@ export function roundedRoll (
 ): number {
   // Fractional stats scale up to a whole number so they use the same
   // breakpoints as everything else: 6.4 goes 64 -> 60 -> 6.0, and 2.95 goes
-  // 295 -> 290 -> 2.9. Scaling by a fixed 10 instead would leave 29.5, which
-  // the multiple-of-5 step then chops all the way back to 2.5.
+  // 295 -> 290 -> 2.9.
   const scale = (dp) ? wholeNumberScale(value) : 1
   const scaled = Math.round(value * scale)
 
