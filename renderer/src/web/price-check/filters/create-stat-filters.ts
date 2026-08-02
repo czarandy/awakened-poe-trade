@@ -565,9 +565,9 @@ function pushHasEmptyModifier (ctx: FiltersCreationContext) {
     text: '1 Empty or Crafted Modifier',
     statRef: '1 Empty or Crafted Modifier',
     disabled: true,
-    // an open suffix is much of what a flask sells on, so show it rather than
-    // tucking it behind the hidden toggle like the rare-item case
-    hidden: (ctx.item.category === ItemCategory.Flask)
+    // with only two slots to fill, the open one is much of what a magic item
+    // sells on, so show it rather than tucking it behind the hidden toggle
+    hidden: (ctx.item.rarity === ItemRarity.Magic)
       ? undefined
       : 'filters.hide_empty_mod',
     tag: FilterTag.Pseudo,
@@ -578,16 +578,15 @@ function pushHasEmptyModifier (ctx: FiltersCreationContext) {
   })
 }
 
-// How many prefixes and suffixes the item can hold at all. Flasks are never
-// rare and roll a single one of each, so they need their own capacity rather
-// than the 3+3 a rare item gets.
+// How many prefixes and suffixes the item can hold at all. A magic item holds
+// one of each, which is what a flask or a magic jewel gets; only a rare has the
+// 3+3 the counting below used to assume.
 function affixCapacity (item: ParsedItem): { prefixes: number, suffixes: number } | null {
   if (item.isCorrupted || item.isMirrored) return null
 
-  if (item.category === ItemCategory.Flask) {
-    return (item.rarity === ItemRarity.Magic) ? { prefixes: 1, suffixes: 1 } : null
-  }
-  return (item.rarity === ItemRarity.Rare) ? { prefixes: 3, suffixes: 3 } : null
+  if (item.rarity === ItemRarity.Magic) return { prefixes: 1, suffixes: 1 }
+  if (item.rarity === ItemRarity.Rare) return { prefixes: 3, suffixes: 3 }
+  return null
 }
 
 function showHasEmptyModifier (ctx: FiltersCreationContext): ItemHasEmptyModifier | false {
