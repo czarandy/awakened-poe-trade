@@ -127,6 +127,8 @@ export function createExactStatFilters (
   } else if (item.category === ItemCategory.Flask) {
     applyFlaskRules(ctx.filters)
     applyFlaskHybridMod(ctx)
+    // flasks use this preset, which never reaches finalFilterTweaks
+    pushHasEmptyModifier(ctx)
   } else if (
     item.category === ItemCategory.MemoryLine ||
     item.category === ItemCategory.SanctumRelic ||
@@ -464,21 +466,7 @@ function finalFilterTweaks (ctx: FiltersCreationContext) {
     applyFlaskHybridMod(ctx)
   }
 
-  const hasEmptyModifier = showHasEmptyModifier(ctx)
-  if (hasEmptyModifier !== false) {
-    ctx.filters.push({
-      tradeId: ['item.has_empty_modifier'],
-      text: '1 Empty or Crafted Modifier',
-      statRef: '1 Empty or Crafted Modifier',
-      disabled: true,
-      hidden: 'filters.hide_empty_mod',
-      tag: FilterTag.Pseudo,
-      sources: [],
-      option: {
-        value: hasEmptyModifier
-      }
-    })
-  }
+  pushHasEmptyModifier(ctx)
 
   if (item.category === ItemCategory.Amulet || item.category === ItemCategory.Ring) {
     applyAnointmentRules(ctx.filters, ctx.item)
@@ -556,14 +544,45 @@ function applyFlaskRules (filters: StatFilter[]) {
 // TODO
 // +1 Prefix Modifier allowed
 // -1 Suffix Modifier allowed
+function pushHasEmptyModifier (ctx: FiltersCreationContext) {
+  const hasEmptyModifier = showHasEmptyModifier(ctx)
+  if (hasEmptyModifier === false) return
+
+  ctx.filters.push({
+    tradeId: ['item.has_empty_modifier'],
+    text: '1 Empty or Crafted Modifier',
+    statRef: '1 Empty or Crafted Modifier',
+    disabled: true,
+    // an open suffix is much of what a flask sells on, so show it rather than
+    // tucking it behind the hidden toggle like the rare-item case
+    hidden: (ctx.item.category === ItemCategory.Flask)
+      ? undefined
+      : 'filters.hide_empty_mod',
+    tag: FilterTag.Pseudo,
+    sources: [],
+    option: {
+      value: hasEmptyModifier
+    }
+  })
+}
+
+// How many prefixes and suffixes the item can hold at all. Flasks are never
+// rare and roll a single one of each, so they need their own capacity rather
+// than the 3+3 a rare item gets.
+function affixCapacity (item: ParsedItem): { prefixes: number, suffixes: number } | null {
+  if (item.isCorrupted || item.isMirrored) return null
+
+  if (item.category === ItemCategory.Flask) {
+    return (item.rarity === ItemRarity.Magic) ? { prefixes: 1, suffixes: 1 } : null
+  }
+  return (item.rarity === ItemRarity.Rare) ? { prefixes: 3, suffixes: 3 } : null
+}
+
 function showHasEmptyModifier (ctx: FiltersCreationContext): ItemHasEmptyModifier | false {
   const { item } = ctx
 
-  if (
-    item.rarity !== ItemRarity.Rare ||
-    item.isCorrupted ||
-    item.isMirrored
-  ) return false
+  const capacity = affixCapacity(item)
+  if (!capacity) return false
 
   const randomMods = item.newMods.filter(mod =>
     mod.info.type === ModifierType.Explicit ||
@@ -572,10 +591,11 @@ function showHasEmptyModifier (ctx: FiltersCreationContext): ItemHasEmptyModifie
     mod.info.type === ModifierType.Crafted)
 
   const craftedMod = randomMods.find(mod => mod.info.type === ModifierType.Crafted)
+  const total = capacity.prefixes + capacity.suffixes
 
   if (
-    (randomMods.length === 5 && !craftedMod) ||
-    (randomMods.length === 6 && craftedMod)
+    (randomMods.length === total - 1 && !craftedMod) ||
+    (randomMods.length === total && craftedMod)
   ) {
     let prefixes = randomMods.filter(mod => mod.info.generation === 'prefix').length
     let suffixes = randomMods.filter(mod => mod.info.generation === 'suffix').length
@@ -588,8 +608,8 @@ function showHasEmptyModifier (ctx: FiltersCreationContext): ItemHasEmptyModifie
       }
     }
 
-    if (prefixes === 2) return ItemHasEmptyModifier.Prefix
-    if (suffixes === 2) return ItemHasEmptyModifier.Suffix
+    if (prefixes === capacity.prefixes - 1) return ItemHasEmptyModifier.Prefix
+    if (suffixes === capacity.suffixes - 1) return ItemHasEmptyModifier.Suffix
   }
 
   return false
