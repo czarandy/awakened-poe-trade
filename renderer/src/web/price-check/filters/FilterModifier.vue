@@ -288,12 +288,7 @@ export default defineComponent({
             { text: t('filters.option_empty_suffix'), value: ItemHasEmptyModifier.Suffix }
           ]
             .filter(option => {
-              // the opposite slot searches for items unlike this one, so it is
-              // never the right answer
               if (option.value === props.filter.option!.value) return true
-              // widening to any slot is only worth offering on a rare, which has
-              // six of them; a flask holds one prefix and one suffix, so "any"
-              // says little more than naming the open slot outright
               return option.value === ItemHasEmptyModifier.Any &&
                 props.item.rarity === ItemRarity.Rare
             })
