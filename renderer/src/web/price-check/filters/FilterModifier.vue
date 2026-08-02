@@ -287,6 +287,9 @@ export default defineComponent({
             { text: t('filters.option_empty_prefix'), value: ItemHasEmptyModifier.Prefix },
             { text: t('filters.option_empty_suffix'), value: ItemHasEmptyModifier.Suffix }
           ]
+            // only the slot the item actually has open is worth offering; the
+            // opposite one searches for items unlike this one
+            .filter(option => option.value === props.filter.option!.value)
         }
       }),
       fontSize: computed(() => AppConfig().fontSize),
