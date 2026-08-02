@@ -287,9 +287,16 @@ export default defineComponent({
             { text: t('filters.option_empty_prefix'), value: ItemHasEmptyModifier.Prefix },
             { text: t('filters.option_empty_suffix'), value: ItemHasEmptyModifier.Suffix }
           ]
-            // only the slot the item actually has open is worth offering; the
-            // opposite one searches for items unlike this one
-            .filter(option => option.value === props.filter.option!.value)
+            .filter(option => {
+              // the opposite slot searches for items unlike this one, so it is
+              // never the right answer
+              if (option.value === props.filter.option!.value) return true
+              // widening to any slot is only worth offering on a rare, which has
+              // six of them; a flask holds one prefix and one suffix, so "any"
+              // says little more than naming the open slot outright
+              return option.value === ItemHasEmptyModifier.Any &&
+                props.item.rarity === ItemRarity.Rare
+            })
         }
       }),
       fontSize: computed(() => AppConfig().fontSize),
