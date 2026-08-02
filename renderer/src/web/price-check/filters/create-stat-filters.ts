@@ -325,6 +325,7 @@ export function calculatedStatToFilter (
     }
 
     let filterDefault: { min: number, max: number }
+    let clampToBounds = true
     if (calc.stat.better === StatBetter.NotComparable) {
       filterDefault = { min: roll.value, max: roll.value }
     } else if (percent === STAT_RANGE_ROUND) {
@@ -348,6 +349,11 @@ export function calculatedStatToFilter (
             max: percentRoll(roll.value, +0, Math.ceil, dp)
           }
         : rounded
+      // hitting the breakpoint is the point of the mode, and clamping back to
+      // the item's own roll range would undo it. A rounded bound below that
+      // range only reaches this far on a pseudo total, where other items get
+      // to the same total by other means.
+      clampToBounds = matchesWholeRange
     } else if (item.rarity === ItemRarity.Unique) {
       filterDefault = {
         min: percentRollDelta(roll.value, (roll.max - roll.min), -percent, Math.floor, dp),
@@ -359,8 +365,10 @@ export function calculatedStatToFilter (
         max: percentRoll(roll.value, +percent, Math.ceil, dp)
       }
     }
-    filterDefault.min = Math.max(filterDefault.min, filterBounds.min)
-    filterDefault.max = Math.min(filterDefault.max, filterBounds.max)
+    if (clampToBounds) {
+      filterDefault.min = Math.max(filterDefault.min, filterBounds.min)
+      filterDefault.max = Math.min(filterDefault.max, filterBounds.max)
+    }
 
     filter.roll = {
       value: roundRoll(roll.value, dp),
