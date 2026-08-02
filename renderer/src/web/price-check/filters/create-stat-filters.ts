@@ -335,9 +335,13 @@ export function calculatedStatToFilter (
       // A mod with a narrow range (jewel life only rolls 5-7%) can round clean
       // past its own bounds, leaving a filter that every roll of the mod
       // passes. Those are worth more pinned to the exact value.
-      const matchesWholeRange =
+      //
+      // The bounds of a pseudo total only describe this item's own sources;
+      // other items reach the same total from different combinations, so the
+      // filter still discriminates and rounding stands.
+      const matchesWholeRange = type !== ModifierType.Pseudo && (
         (calc.stat.better === StatBetter.PositiveRoll && rounded.min <= roll.min) ||
-        (calc.stat.better === StatBetter.NegativeRoll && rounded.max >= roll.max)
+        (calc.stat.better === StatBetter.NegativeRoll && rounded.max >= roll.max))
       filterDefault = (matchesWholeRange)
         ? {
             min: percentRoll(roll.value, -0, Math.floor, dp),
