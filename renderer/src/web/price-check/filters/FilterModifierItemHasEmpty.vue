@@ -9,12 +9,17 @@
 <script lang="ts">
 import { defineComponent, PropType, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { ItemRarity, ParsedItem } from '@/parser'
 import { StatFilter, ItemHasEmptyModifier } from './interfaces'
 
 export default defineComponent({
   props: {
     filter: {
       type: Object as PropType<StatFilter>,
+      required: true
+    },
+    item: {
+      type: Object as PropType<ParsedItem>,
       required: true
     }
   },
@@ -34,9 +39,16 @@ export default defineComponent({
         [ItemHasEmptyModifier.Prefix, 'item.has_empty_prefix'],
         [ItemHasEmptyModifier.Suffix, 'item.has_empty_suffix']
       ] as const)
-        // only the slot the item actually has open is worth offering; the
-        // opposite one searches for items unlike this one
-        .filter(([value]) => value === filter.option!.value)
+        .filter(([value]) => {
+          // the opposite slot searches for items unlike this one, so it is
+          // never the right answer
+          if (value === filter.option!.value) return true
+          // widening to any slot is only worth offering on a rare, which has
+          // six of them; a flask holds one prefix and one suffix, so "any"
+          // says little more than naming the open slot outright
+          return value === ItemHasEmptyModifier.Any &&
+            props.item.rarity === ItemRarity.Rare
+        })
         .map(([value, text]) => ({
           text,
           select: () => select(value),
