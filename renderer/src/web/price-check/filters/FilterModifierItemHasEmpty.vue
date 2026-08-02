@@ -33,11 +33,15 @@ export default defineComponent({
         [ItemHasEmptyModifier.Any, 'item.has_empty_affix'],
         [ItemHasEmptyModifier.Prefix, 'item.has_empty_prefix'],
         [ItemHasEmptyModifier.Suffix, 'item.has_empty_suffix']
-      ] as const).map(([value, text]) => ({
-        text,
-        select: () => select(value),
-        isSelected: (filter.option!.value === value)
-      }))
+      ] as const)
+        // only the slot the item actually has open is worth offering; the
+        // opposite one searches for items unlike this one
+        .filter(([value]) => value === filter.option!.value)
+        .map(([value, text]) => ({
+          text,
+          select: () => select(value),
+          isSelected: (filter.option!.value === value)
+        }))
     })
 
     const { t } = useI18n()
