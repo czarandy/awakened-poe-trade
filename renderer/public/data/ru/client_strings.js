@@ -65,6 +65,7 @@ export default {
   QUALITY_ANOMALOUS: /^Аномальный: (.*)$/,
   QUALITY_DIVERGENT: /^Искривлённый: (.*)$/,
   QUALITY_PHANTASMAL: /^Фантомный: (.*)$/,
+  CHART_SHAPE: 'Chart Shape: ',
   AREA_LEVEL: 'Уровень области: ',
   HEIST_WINGS_REVEALED: 'Крыльев обнаружено: ',
   HEIST_BLUEPRINT_TARGET: 'Предмет кражи: ',

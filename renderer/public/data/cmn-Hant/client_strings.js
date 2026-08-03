@@ -65,6 +65,7 @@ export default {
   QUALITY_ANOMALOUS: /^異常的 (.*)$/,
   QUALITY_DIVERGENT: /^相異的 (.*)$/,
   QUALITY_PHANTASMAL: /^幻影的 (.*)$/,
+  CHART_SHAPE: 'Chart Shape: ',
   AREA_LEVEL: '地區等級: ',
   HEIST_WINGS_REVEALED: '已揭露側廂: ',
   HEIST_BLUEPRINT_TARGET: '劫盜目標：',

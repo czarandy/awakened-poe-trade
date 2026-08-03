@@ -4737,3 +4737,6 @@
 {"name":"Zerphi's Heart","refName":"Zerphi's Heart","namespace":"UNIQUE","unique":{"base":"Paua Amulet","disenchantValue":26.52},"icon":"https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvQW11bGV0cy9aZXJwaGlzSGVhcnQiLCJ3IjoxLCJoIjoxLCJzY2FsZSI6MX1d/3e35140dfe/ZerphisHeart.png"}
 {"name":"Zerphi's Last Breath","refName":"Zerphi's Last Breath","namespace":"UNIQUE","unique":{"base":"Grand Mana Flask","disenchantValue":106.41},"icon":"https://web.poecdn.com/gen/image/WzksMTQseyJmIjoiMkRJdGVtcy9GbGFza3MvWmVycGhpc0xhc3RCcmVhdGgiLCJ3IjoxLCJoIjoyLCJzY2FsZSI6MSwibGV2ZWwiOjF9XQ/bf8cb7b943/ZerphisLastBreath.png"}
 {"name":"Scrying Orb","refName":"Scrying Orb","namespace":"ITEM","icon":"https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvQ3VycmVuY3kvU2NyeWluZ09yYiIsInciOjEsImgiOjEsInNjYWxlIjoxfV0/045d452175/ScryingOrb.png"}
+{"name":"Sandy Seabed Chart","refName":"Sandy Seabed Chart","namespace":"ITEM","craftable":{"category":"Chart"},"icon":""}
+{"name":"Coral Forest Chart","refName":"Coral Forest Chart","namespace":"ITEM","craftable":{"category":"Chart"},"icon":""}
+{"name":"Coral Reef Chart","refName":"Coral Reef Chart","namespace":"ITEM","craftable":{"category":"Chart"},"icon":""}

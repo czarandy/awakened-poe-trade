@@ -65,6 +65,7 @@ const parsers: Array<ParserFn | { virtual: VirtualParserFn }> = [
   parseSplit,
   parseSentinelCharge,
   parseMapArea,
+  parseChartShape,
   parseLogbookArea,
   parseLogbookArea,
   parseLogbookArea,
@@ -237,7 +238,12 @@ function parseMapTier (item: ParserState) {
 }
 
 function parseMap (section: string[], item: ParsedItem) {
-  if (item.category !== ItemCategory.Map) return 'PARSER_SKIPPED'
+  // charts carry Item Quantity in the same shape, and the trade site filters
+  // them with the map filter group
+  if (
+    item.category !== ItemCategory.Map &&
+    item.category !== ItemCategory.Chart
+  ) return 'PARSER_SKIPPED'
 
   if (!item.map) {
     item.map = { tier: undefined }
@@ -271,6 +277,13 @@ function parseMap (section: string[], item: ParsedItem) {
       item.mapCompletionReward = _$.MAP_COMPLETION_REWARD.exec(line)![1]
       isParsed = 'SECTION_PARSED'
     }
+  }
+
+  if (item.category === ItemCategory.Chart && isParsed === 'SECTION_PARSED') {
+    // this section is consumed here, so the nested lines have to be read now:
+    // the area level, and the region, which is the only line without a label
+    parseAreaLevelNested(section, item)
+    item.chartRegion = section.find(line => !line.includes(': '))
   }
 
   return isParsed
@@ -811,6 +824,16 @@ function parseTincture (section: string[], item: ParsedItem) {
   return 'SECTION_SKIPPED'
 }
 
+function parseChartShape (section: string[], item: ParsedItem) {
+  if (item.category !== ItemCategory.Chart) return 'PARSER_SKIPPED'
+
+  if (section.length === 1 && section[0].startsWith(_$.CHART_SHAPE)) {
+    item.chartShape = section[0].slice(_$.CHART_SHAPE.length)
+    return 'SECTION_PARSED'
+  }
+  return 'SECTION_SKIPPED'
+}
+
 function parseMapArea (section: string[], item: ParsedItem) {
   if (section.length === 1 && section[0].startsWith(_$.MAP_AREA)) {
     item.mapArea = section[0].slice(_$.MAP_AREA.length)
@@ -978,7 +1001,8 @@ function parseAreaLevel (section: string[], item: ParsedItem) {
     item.info.refName !== 'Chronicle of Atzoatl' &&
     item.info.refName !== 'Expedition Logbook' &&
     item.info.refName !== 'Mirrored Tablet' &&
-    item.info.refName !== 'Forbidden Tome'
+    item.info.refName !== 'Forbidden Tome' &&
+    item.category !== ItemCategory.Chart
   ) return 'PARSER_SKIPPED'
 
   parseAreaLevelNested(section, item)

@@ -6,6 +6,7 @@ import { ModifierType } from '@/parser/modifiers'
 import { BaseType, ITEM_BY_REF, ITEM_BY_TRANSLATED } from '@/assets/data'
 import { CATEGORY_TO_TRADE_ID } from '../trade/pathofexile-trade'
 import { SCRYING_ORB_AREA_TRADE_IDS, SCRYING_ORB_DISCRIMINATOR } from '../trade/scrying-orb'
+import { CHART_REGIONS } from '../trade/chart'
 
 export const SPECIAL_SUPPORT_GEM = ['Empower Support', 'Enlighten Support', 'Enhance Support']
 
@@ -73,6 +74,20 @@ export function createFilters (
         baseTypeTrade: areaTradeId
       }
       filters.discriminator = { trade: SCRYING_ORB_DISCRIMINATOR }
+      return filters
+    }
+  }
+  // A chart is priced on its region, so search the region's own trade type.
+  // Unknown regions fall through and search the plain base type, which the
+  // trade site also accepts.
+  if (item.chartRegion) {
+    const region = CHART_REGIONS[item.chartRegion]
+    if (region) {
+      filters.searchExact = {
+        baseType: item.info.name,
+        baseTypeTrade: region.type
+      }
+      filters.discriminator = { trade: region.disc }
       return filters
     }
   }
