@@ -117,7 +117,7 @@ export function createExactStatFilters (
   }
 
   if (item.category === ItemCategory.ClusterJewel) {
-    applyClusterJewelRules(ctx.filters, true)
+    applyClusterJewelRules(ctx.filters)
   } if (
     item.category === ItemCategory.HeistContract ||
     item.category === ItemCategory.HeistBlueprint
@@ -477,7 +477,7 @@ function finalFilterTweaks (ctx: FiltersCreationContext) {
   const { item } = ctx
 
   if (item.category === ItemCategory.ClusterJewel && item.rarity !== ItemRarity.Unique) {
-    applyClusterJewelRules(ctx.filters, false)
+    applyClusterJewelRules(ctx.filters)
   } else if (
     (item.category === ItemCategory.Jewel || item.category === ItemCategory.AbyssJewel) &&
     item.rarity !== ItemRarity.Unique
@@ -549,7 +549,7 @@ function finalFilterTweaks (ctx: FiltersCreationContext) {
   }
 }
 
-function applyClusterJewelRules (filters: StatFilter[], exact: boolean) {
+function applyClusterJewelRules (filters: StatFilter[]) {
   for (const filter of filters) {
     if (filter.statRef === '# Added Passive Skills are Jewel Sockets') {
       filter.hidden = 'filters.hide_const_roll'
@@ -560,12 +560,10 @@ function applyClusterJewelRules (filters: StatFilter[], exact: boolean) {
     if (filter.statRef === 'Adds # Passive Skills') {
       filter.disabled = false
 
-      // 4 is [_, 5]
+      // 4 and 5 are worth the same, so both search [_, 5]. 5 gets there on
+      // its own, since fewer passives is the better roll.
       if (filter.roll!.value === 4) {
         filter.roll!.max = 5
-      // 5 is [5, 5] (and [_, 5] for Rare jewel)
-      } else if (filter.roll!.value === 5 && exact) {
-        filter.roll!.min = filter.roll!.default.min
       // 3, 6, 10, 11, 12 are [n, _]
       } else if (
         filter.roll!.value === 3 ||
@@ -577,7 +575,7 @@ function applyClusterJewelRules (filters: StatFilter[], exact: boolean) {
         filter.roll!.min = filter.roll!.default.min
         filter.roll!.max = undefined
       }
-      // else 2, 5(Rare), 8, 9 are [_ , n]
+      // else 2, 5, 8, 9 are [_ , n]
     }
   }
 }
