@@ -521,12 +521,10 @@ function applyClusterJewelRules (filters: StatFilter[]) {
     if (filter.statRef === 'Adds # Passive Skills') {
       filter.disabled = false
 
-      // 4 is [_, 5]
+      // 4 and 5 are worth the same, so both search [_, 5]. 5 gets there on
+      // its own, since fewer passives is the better roll.
       if (filter.roll!.value === 4) {
         filter.roll!.max = 5
-      // 5 is [5, 5]
-      } else if (filter.roll!.value === 5) {
-        filter.roll!.min = filter.roll!.default.min
       // 3, 6, 10, 11, 12 are [n, _]
       } else if (
         filter.roll!.value === 3 ||
