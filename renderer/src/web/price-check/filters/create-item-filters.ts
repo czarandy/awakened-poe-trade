@@ -88,6 +88,12 @@ export function createFilters (
         baseTypeTrade: region.type
       }
       filters.discriminator = { trade: region.disc }
+      if (item.areaLevel) {
+        filters.areaLevel = {
+          value: item.areaLevel,
+          disabled: false
+        }
+      }
       return filters
     }
   }
