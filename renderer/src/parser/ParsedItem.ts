@@ -49,6 +49,11 @@ export interface ParsedItem {
   areaLevel?: number
   chartShape?: string
   chartRegion?: string
+  storedMonsters?: {
+    count: number
+    level: number
+    from?: string
+  }
   talismanTier?: number
   memoryStrands?: number
   quality?: number
