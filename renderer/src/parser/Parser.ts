@@ -67,6 +67,7 @@ const parsers: Array<ParserFn | { virtual: VirtualParserFn }> = [
   parseSplit,
   parseSentinelCharge,
   parseScryingOrb,
+  parseStoredMonsters,
   parseMercenary,
   parseLogbookArea,
   parseLogbookArea,
@@ -924,6 +925,24 @@ function parseEldritchItem (section: string[]): void {
       break
     }
   }
+}
+
+function parseStoredMonsters (section: string[], item: ParsedItem) {
+  // "From: " is too generic to match on its own, so key off the one item that
+  // carries these
+  if (item.info.refName !== 'Blood-filled Vessel') return 'PARSER_SKIPPED'
+
+  const count = section.find(line => line.startsWith(_$.STORED_MONSTERS))
+  const level = section.find(line => line.startsWith(_$.STORED_MONSTER_LEVEL))
+  if (!count || !level) return 'SECTION_SKIPPED'
+
+  const from = section.find(line => line.startsWith(_$.STORED_FROM))
+  item.storedMonsters = {
+    count: parseInt(count.slice(_$.STORED_MONSTERS.length), 10),
+    level: parseInt(level.slice(_$.STORED_MONSTER_LEVEL.length), 10),
+    from: from?.slice(_$.STORED_FROM.length)
+  }
+  return 'SECTION_PARSED'
 }
 
 function parseSynthesised (section: string[], item: ParserState) {
