@@ -47,6 +47,11 @@ export interface ParsedItem {
   mapMoreThreads?: number
   mapMoreCurrency?: number
   mapMoreDivCards?: number
+  storedMonsters?: {
+    count: number
+    level: number
+    from?: string
+  }
   heistBlueprint?: {
     wingsRevealed?: number
     wingsTotal?: number
