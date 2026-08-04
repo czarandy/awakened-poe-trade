@@ -48,7 +48,8 @@ export interface ParsedItem {
   mapMoreCurrency?: number
   mapMoreDivCards?: number
   storedMonsters?: {
-    count: number
+    unique: number
+    other: number
     level: number
     from?: string
   }

@@ -17,6 +17,27 @@ const VALDO_LETHAL_STATS = [
   stat('Players who Die in area are sent to the Void')
 ]
 
+const RITUAL_MONSTERS = {
+  UNIQUE: stat('Unique Monsters (Blood-Filled Vessel): #'),
+  OTHER: stat('Non-Unique Monsters (Blood-Filled Vessel): #')
+}
+
+export function ritualVesselProps (ctx: FiltersCreationContext): void {
+  const { item } = ctx
+  if (!item.storedMonsters) return
+
+  ctx.filters.push(noSourcePseudoToFilter({
+    pseudo: pseudoStatByRef(RITUAL_MONSTERS.UNIQUE)!,
+    roll: { min: 0, max: Number.MAX_SAFE_INTEGER, value: item.storedMonsters.unique },
+    disabled: false
+  }, ctx))
+  ctx.filters.push(noSourcePseudoToFilter({
+    pseudo: pseudoStatByRef(RITUAL_MONSTERS.OTHER)!,
+    roll: { min: 0, max: Number.MAX_SAFE_INTEGER, value: item.storedMonsters.other },
+    disabled: false
+  }, ctx))
+}
+
 function areaProps (
   { disabled }: { disabled: { itemQuantity?: boolean, itemRarity?: boolean, packSize?: boolean } },
   ctx: FiltersCreationContext
