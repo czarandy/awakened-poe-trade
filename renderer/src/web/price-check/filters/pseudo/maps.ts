@@ -19,6 +19,27 @@ const VALDO_LETHAL_STATS = [
 
 const ORIGINATOR_IMPLICIT = stat("Area is Influenced by the Originator's Memories")
 
+const RITUAL_MONSTERS = {
+  UNIQUE: stat('Unique Monsters (Blood-Filled Vessel): #'),
+  OTHER: stat('Non-Unique Monsters (Blood-Filled Vessel): #')
+}
+
+export function ritualVesselProps (ctx: FiltersCreationContext): void {
+  const { item } = ctx
+  if (!item.storedMonsters) return
+
+  ctx.filters.push(noSourcePseudoToFilter({
+    pseudo: pseudoStatByRef(RITUAL_MONSTERS.UNIQUE)!,
+    roll: { min: 0, max: Number.MAX_SAFE_INTEGER, value: item.storedMonsters.unique },
+    disabled: false
+  }, ctx))
+  ctx.filters.push(noSourcePseudoToFilter({
+    pseudo: pseudoStatByRef(RITUAL_MONSTERS.OTHER)!,
+    roll: { min: 0, max: Number.MAX_SAFE_INTEGER, value: item.storedMonsters.other },
+    disabled: false
+  }, ctx))
+}
+
 export function mapProps (ctx: FiltersCreationContext): void {
   const { item } = ctx
   if (!item.map || item.mapBlighted || item.mapCompletionReward || item.rarity === ItemRarity.Unique) return

@@ -50,7 +50,8 @@ export interface ParsedItem {
   chartShape?: string
   chartRegion?: string
   storedMonsters?: {
-    count: number
+    unique: number
+    other: number
     level: number
     from?: string
   }

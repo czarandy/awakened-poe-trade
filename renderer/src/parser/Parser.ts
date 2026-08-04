@@ -830,13 +830,33 @@ function parseStoredMonsters (section: string[], item: ParsedItem) {
   // carries these
   if (item.info.refName !== 'Blood-filled Vessel') return 'PARSER_SKIPPED'
 
-  const count = section.find(line => line.startsWith(_$.STORED_MONSTERS))
+  const at = section.findIndex(line => line.startsWith(_$.STORED_MONSTERS))
   const level = section.find(line => line.startsWith(_$.STORED_MONSTER_LEVEL))
-  if (!count || !level) return 'SECTION_SKIPPED'
+  if (at === -1 || !level) return 'SECTION_SKIPPED'
+
+  // with no unique monsters the count sits on the one line, otherwise each
+  // unique is named and the rest are summarised by a trailing line
+  const inline = section[at].slice(_$.STORED_MONSTERS.length).trim()
+  let unique = 0
+  let other = 0
+  if (inline) {
+    other = parseInt(inline, 10)
+  } else {
+    for (const line of section.slice(at + 1)) {
+      const summary = _$.STORED_OTHER_MONSTERS.exec(line)
+      if (summary) {
+        other = Number(summary[1])
+        break
+      }
+      if (line.startsWith(_$.STORED_MONSTER_LEVEL)) break
+      unique += 1
+    }
+  }
 
   const from = section.find(line => line.startsWith(_$.STORED_FROM))
   item.storedMonsters = {
-    count: parseInt(count.slice(_$.STORED_MONSTERS.length), 10),
+    unique,
+    other,
     level: parseInt(level.slice(_$.STORED_MONSTER_LEVEL.length), 10),
     from: from?.slice(_$.STORED_FROM.length)
   }

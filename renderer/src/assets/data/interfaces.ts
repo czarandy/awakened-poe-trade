@@ -177,6 +177,7 @@ export interface TranslationDict {
   QUALITY_PHANTASMAL: RegExp
   AREA_LEVEL: string
   STORED_MONSTERS: string
+  STORED_OTHER_MONSTERS: RegExp
   STORED_MONSTER_LEVEL: string
   STORED_FROM: string
   CHART_SHAPE: string

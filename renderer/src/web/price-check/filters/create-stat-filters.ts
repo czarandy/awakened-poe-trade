@@ -6,7 +6,7 @@ import { filterPseudo } from './pseudo'
 import { applyRules as applyAtzoatlRules } from './pseudo/atzoatl-rules'
 import { applyRules as applyMirroredTabletRules } from './pseudo/reflection-rules'
 import { filterItemProp, filterBasePercentile, filterMemoryStrands } from './pseudo/item-property'
-import { mapProps, valdoBadMods } from './pseudo/maps'
+import { mapProps, valdoBadMods, ritualVesselProps } from './pseudo/maps'
 import { applyFlaskHybridMod } from './pseudo/flasks'
 import { applyHeistRules } from './pseudo/heist'
 import { decodeOils, applyAnointmentRules } from './pseudo/anointments'
@@ -75,6 +75,7 @@ export function createExactStatFilters (
   filterBasePercentile(ctx)
   filterMemoryStrands(ctx)
   mapProps(ctx)
+  ritualVesselProps(ctx)
   valdoBadMods(ctx)
 
   ctx.filters.push(
