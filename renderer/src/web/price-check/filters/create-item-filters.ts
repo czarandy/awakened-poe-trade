@@ -67,6 +67,19 @@ export function createFilters (
       disabled: !(item.stackSize && item.stackSize.value > 1 && opts.activateStockFilter)
     }
   }
+  // The level of the monsters a vessel stores is what the trade site indexes
+  // as the area level.
+  if (item.storedMonsters) {
+    filters.searchExact = {
+      baseType: item.info.name,
+      baseTypeTrade: t(opts, item.info)
+    }
+    filters.areaLevel = {
+      value: item.storedMonsters.level,
+      disabled: false
+    }
+    return filters
+  }
   if (item.category === ItemCategory.Invitation) {
     filters.searchExact = {
       baseType: item.info.name,
