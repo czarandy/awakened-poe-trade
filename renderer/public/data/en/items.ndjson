@@ -4741,3 +4741,4 @@
 {"name":"Coral Forest Chart","refName":"Coral Forest Chart","namespace":"ITEM","craftable":{"category":"Chart"},"icon":""}
 {"name":"Coral Reef Chart","refName":"Coral Reef Chart","namespace":"ITEM","craftable":{"category":"Chart"},"icon":""}
 {"name":"Blood-filled Vessel","refName":"Blood-filled Vessel","namespace":"ITEM","icon":""}
+{"name":"Facetor's Lens","refName":"Facetor's Lens","namespace":"ITEM","icon":""}

@@ -66,6 +66,7 @@ export default {
   QUALITY_DIVERGENT: /^相異的 (.*)$/,
   QUALITY_PHANTASMAL: /^幻影的 (.*)$/,
   CHART_SHAPE: 'Chart Shape: ',
+  STORED_EXPERIENCE: 'Stored Experience: ',
   STORED_MONSTERS: 'Monsters:',
   STORED_OTHER_MONSTERS: /^(\d+) Other Monsters$/,
   STORED_MONSTER_LEVEL: 'Monster Level: ',

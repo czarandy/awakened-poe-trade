@@ -49,6 +49,7 @@ export interface ParsedItem {
   areaLevel?: number
   chartShape?: string
   chartRegion?: string
+  storedExperience?: number
   storedMonsters?: {
     unique: number
     other: number
