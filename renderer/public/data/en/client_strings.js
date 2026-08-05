@@ -66,6 +66,7 @@ export default {
   QUALITY_DIVERGENT: /^Divergent (.*)$/,
   QUALITY_PHANTASMAL: /^Phantasmal (.*)$/,
   AREA_LEVEL: 'Area Level: ',
+  STORED_EXPERIENCE: 'Stored Experience: ',
   STORED_MONSTERS: 'Monsters:',
   STORED_OTHER_MONSTERS: /^(\d+) Other Monsters$/,
   STORED_MONSTER_LEVEL: 'Monster Level: ',

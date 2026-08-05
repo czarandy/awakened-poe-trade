@@ -138,6 +138,11 @@ export function createFilters (
       if (item.areaLevel! < 83) {
         filters.areaLevel.max = item.areaLevel!
       }
+    } else if (item.storedExperience) {
+      filters.storedExperience = {
+        value: item.storedExperience,
+        disabled: false
+      }
     } else if (item.itemLevel) {
       // Incubators, Wombgifts
       filters.itemLevel = {
