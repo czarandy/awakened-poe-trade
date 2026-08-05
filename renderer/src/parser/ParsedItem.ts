@@ -47,6 +47,7 @@ export interface ParsedItem {
   mapMoreThreads?: number
   mapMoreCurrency?: number
   mapMoreDivCards?: number
+  storedExperience?: number
   storedMonsters?: {
     unique: number
     other: number

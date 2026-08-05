@@ -67,6 +67,7 @@ export default {
   QUALITY_DIVERGENT: /^상이한 (.*)$/,
   QUALITY_PHANTASMAL: /^몽환적인 (.*)$/,
   AREA_LEVEL: '지역 레벨: ',
+  STORED_EXPERIENCE: 'Stored Experience: ',
   STORED_MONSTERS: 'Monsters:',
   STORED_OTHER_MONSTERS: /^(\d+) Other Monsters$/,
   STORED_MONSTER_LEVEL: 'Monster Level: ',
