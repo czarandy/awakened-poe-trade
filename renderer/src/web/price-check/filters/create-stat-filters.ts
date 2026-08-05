@@ -467,6 +467,18 @@ function filterAdjustmentForNegate (
 function finalFilterTweaks (ctx: FiltersCreationContext) {
   const { item } = ctx
 
+  // A fractured mod also appears as its explicit self, and only the fractured
+  // copy is for crafting. Hide it up front so the rules below, which all skip
+  // hidden filters, cannot switch it on and quietly narrow the search.
+  for (const filter of ctx.filters) {
+    if (filter.tag !== FilterTag.Fractured) continue
+
+    const mod = ctx.item.statsByType.find(mod => mod.stat.ref === filter.statRef)!
+    if (mod.stat.trade.ids[ModifierType.Explicit]) {
+      filter.hidden = 'filters.hide_for_crafting'
+    }
+  }
+
   if (item.category === ItemCategory.ClusterJewel && item.rarity !== ItemRarity.Unique) {
     applyClusterJewelRules(ctx.filters)
   } else if (
@@ -486,13 +498,7 @@ function finalFilterTweaks (ctx: FiltersCreationContext) {
   }
 
   for (const filter of ctx.filters) {
-    if (filter.tag === FilterTag.Fractured) {
-      const mod = ctx.item.statsByType.find(mod => mod.stat.ref === filter.statRef)!
-      if (mod.stat.trade.ids[ModifierType.Explicit]) {
-        // hide only if fractured mod has corresponding explicit variant
-        filter.hidden = 'filters.hide_for_crafting'
-      }
-    } else if (filter.tag === FilterTag.Foulborn || filter.tag === FilterTag.Variant) {
+    if (filter.tag === FilterTag.Foulborn || filter.tag === FilterTag.Variant) {
       filter.disabled = false
     }
   }
