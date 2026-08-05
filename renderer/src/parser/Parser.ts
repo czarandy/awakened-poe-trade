@@ -68,6 +68,7 @@ const parsers: Array<ParserFn | { virtual: VirtualParserFn }> = [
   parseSentinelCharge,
   parseScryingOrb,
   parseStoredMonsters,
+  parseStoredExperience,
   parseMercenary,
   parseViscera,
   parseLogbookArea,
@@ -985,6 +986,16 @@ function parseStoredMonsters (section: string[], item: ParsedItem) {
     from: from?.slice(_$.STORED_FROM.length)
   }
   return 'SECTION_PARSED'
+}
+
+function parseStoredExperience (section: string[], item: ParsedItem) {
+  if (section.length === 1 && section[0].startsWith(_$.STORED_EXPERIENCE)) {
+    // the game groups the digits
+    const value = section[0].slice(_$.STORED_EXPERIENCE.length).replace(/[,\s]/g, '')
+    item.storedExperience = parseInt(value, 10)
+    return 'SECTION_PARSED'
+  }
+  return 'SECTION_SKIPPED'
 }
 
 function parseSynthesised (section: string[], item: ParserState) {

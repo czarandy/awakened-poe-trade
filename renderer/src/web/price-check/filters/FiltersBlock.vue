@@ -13,6 +13,8 @@
         :filter="filters.areaLevel" :name="t('item.area_level')" />
       <filter-btn-numeric v-if="filters.sentinelCharge"
         :filter="filters.sentinelCharge" :name="t('item.sentinel_charge')" />
+      <filter-btn-numeric v-if="filters.storedExperience"
+        :filter="filters.storedExperience" :name="t('item.stored_experience')" />
       <filter-btn-numeric v-if="filters.itemLevel"
         :filter="filters.itemLevel" :name="t('item.item_level')" />
       <filter-btn-numeric v-if="filters.stackSize"

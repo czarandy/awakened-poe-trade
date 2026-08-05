@@ -73,6 +73,7 @@ export default {
   QUALITY_DIVERGENT: /^Искривлённый: (.*)$/,
   QUALITY_PHANTASMAL: /^Фантомный: (.*)$/,
   AREA_LEVEL: 'Уровень области: ',
+  STORED_EXPERIENCE: 'Stored Experience: ',
   STORED_MONSTERS: 'Monsters:',
   STORED_OTHER_MONSTERS: /^(\d+) Other Monsters$/,
   STORED_MONSTER_LEVEL: 'Monster Level: ',

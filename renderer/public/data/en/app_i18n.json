@@ -62,6 +62,7 @@
     "has_empty_modifier": "1 Empty or Crafted Modifier",
     "mercenary_6link": "6-Link with {0} Support Gems of Tier 3",
     "item_level": "Item Level: {0}",
+    "stored_experience": "Stored Experience: {0}",
     "stock": "Stock: {0}",
     "map_tier": "Map Tier: {0}",
     "area_level": "Area Level: {0}",

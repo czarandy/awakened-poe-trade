@@ -130,6 +130,7 @@ interface TradeRequest {
       misc_filters?: {
         filters: {
           ilvl?: FilterRange
+          stored_experience?: FilterRange
           quality?: FilterRange
           gem_level?: FilterRange
           corrupted?: FilterBoolean
@@ -369,6 +370,13 @@ export function createTradeRequest (filters: ItemFilters, stats: FilterOrGroup[]
 
   if (filters.quality && !filters.quality.disabled) {
     propSet(query.filters, 'misc_filters.filters.quality.min', filters.quality.value)
+  }
+
+  if (filters.storedExperience && !filters.storedExperience.disabled) {
+    propSet(query.filters, 'misc_filters.filters.stored_experience.min', filters.storedExperience.value)
+    if (filters.storedExperience.max) {
+      propSet(query.filters, 'misc_filters.filters.stored_experience.max', filters.storedExperience.max)
+    }
   }
 
   if (filters.itemLevel && !filters.itemLevel.disabled) {
