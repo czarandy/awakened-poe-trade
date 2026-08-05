@@ -1,7 +1,7 @@
 {
   "name": "silver-poe-trade",
   "productName": "Silver PoE Trade",
-  "version": "3.29.102-silver.4",
+  "version": "3.29.102-silver.5",
   "private": true,
   "scripts": {
     "dev": "node build/script.mjs",
