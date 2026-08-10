@@ -32,7 +32,8 @@ function wholeNumberScale (value: number): number {
 export function roundedRoll (
   value: number,
   method: Math['floor'] | Math['ceil'],
-  dp: boolean
+  dp: boolean,
+  widenExact = false
 ): number {
   // Fractional stats scale up to a whole number so they use the same
   // breakpoints as everything else: 6.4 goes 64 -> 60 -> 6.0, and 2.95 goes
@@ -41,14 +42,24 @@ export function roundedRoll (
   const scaled = Math.round(value * scale)
 
   // Single digits once scaled (+3 to level of gems, 0.9 attacks per second)
-  // have no useful breakpoint between them, so leave them alone. This also
-  // keeps small rolls off 0, which would drop the constraint entirely.
+  // have no useful breakpoint between them, so fixed and best rolls stay
+  // unchanged. A non-best variable roll widens by one unit so smart rounding
+  // does not turn into an exact search (6 in a 5-7 range becomes 5+).
   if (Math.abs(scaled) < 10) {
-    return roundRoll(value, dp)
+    const widened = widenExact
+      ? scaled + ((method === Math.floor) ? -1 : 1)
+      : scaled
+    return widened / scale
   }
 
   const step = (Math.abs(scaled) < 50) ? 5 : 10
-  return (method(scaled / step) * step) / scale
+  let rounded = method(scaled / step) * step
+  if (widenExact && rounded === scaled) {
+    const adjacent = scaled + ((method === Math.floor) ? -1 : 1)
+    const adjacentStep = (Math.abs(adjacent) < 50) ? 5 : 10
+    rounded = method(adjacent / adjacentStep) * adjacentStep
+  }
+  return rounded / scale
 }
 
 export function percentRoll (
