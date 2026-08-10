@@ -337,13 +337,29 @@ export function calculatedStatToFilter (
     if (calc.stat.better === StatBetter.NotComparable) {
       filterDefault = { min: roll.value, max: roll.value }
     } else if (percent === STAT_RANGE_ROUND) {
+      const isBestRoll = (
+        (calc.stat.better === StatBetter.PositiveRoll && roll.value >= roll.max) ||
+        (calc.stat.better === StatBetter.NegativeRoll && roll.value <= roll.min)
+      )
+      const widenExact = roll.min !== roll.max && !isBestRoll
       const rounded = {
-        min: roundedRoll(roll.value, Math.floor, dp),
-        max: roundedRoll(roll.value, Math.ceil, dp)
+        min: roundedRoll(
+          roll.value,
+          Math.floor,
+          dp,
+          widenExact && calc.stat.better === StatBetter.PositiveRoll
+        ),
+        max: roundedRoll(
+          roll.value,
+          Math.ceil,
+          dp,
+          widenExact && calc.stat.better === StatBetter.NegativeRoll
+        )
       }
       // A mod with a narrow range (jewel life only rolls 5-7%) can round clean
       // past its own bounds, leaving a filter that every roll of the mod
-      // passes. Those are worth more pinned to the exact value.
+      // passes. Only a best roll is worth pinning to its exact value; lesser
+      // rolls should retain the wider smart-rounded bound.
       //
       // The bounds of a pseudo total only describe this item's own sources;
       // other items reach the same total from different combinations, so the
@@ -351,17 +367,18 @@ export function calculatedStatToFilter (
       const matchesWholeRange = type !== ModifierType.Pseudo && (
         (calc.stat.better === StatBetter.PositiveRoll && rounded.min <= roll.min) ||
         (calc.stat.better === StatBetter.NegativeRoll && rounded.max >= roll.max))
-      filterDefault = (matchesWholeRange)
+      const pinExact = matchesWholeRange && isBestRoll
+      filterDefault = (pinExact)
         ? {
             min: percentRoll(roll.value, -0, Math.floor, dp),
             max: percentRoll(roll.value, +0, Math.ceil, dp)
           }
         : rounded
-      // hitting the breakpoint is the point of the mode, and clamping back to
-      // the item's own roll range would undo it. A rounded bound below that
-      // range only reaches this far on a pseudo total, where other items get
-      // to the same total by other means.
-      clampToBounds = matchesWholeRange
+      // Hitting the breakpoint is the point of the mode, and clamping back to
+      // the item's own roll range would undo it. Only a pinned best roll needs
+      // to remain clamped; widened lesser rolls may deliberately sit outside
+      // the range so the filter does not become exact.
+      clampToBounds = pinExact
     } else if (item.rarity === ItemRarity.Unique) {
       filterDefault = {
         min: percentRollDelta(roll.value, (roll.max - roll.min), -percent, Math.floor, dp),
