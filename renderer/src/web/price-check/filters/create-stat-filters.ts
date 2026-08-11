@@ -322,19 +322,19 @@ export function calculatedStatToFilter (
         (calc.stat.better === StatBetter.PositiveRoll && roll.value >= roll.max) ||
         (calc.stat.better === StatBetter.NegativeRoll && roll.value <= roll.min)
       )
-      const widenExact = roll.min !== roll.max && !isBestRoll
+      const widenSingleDigit = roll.min !== roll.max && !isBestRoll
       const rounded = {
         min: roundedRoll(
           roll.value,
           Math.floor,
           dp,
-          widenExact && calc.stat.better === StatBetter.PositiveRoll
+          widenSingleDigit && calc.stat.better === StatBetter.PositiveRoll
         ),
         max: roundedRoll(
           roll.value,
           Math.ceil,
           dp,
-          widenExact && calc.stat.better === StatBetter.NegativeRoll
+          widenSingleDigit && calc.stat.better === StatBetter.NegativeRoll
         )
       }
       // A mod with a narrow range (jewel life only rolls 5-7%) can round clean
@@ -357,8 +357,8 @@ export function calculatedStatToFilter (
         : rounded
       // Hitting the breakpoint is the point of the mode, and clamping back to
       // the item's own roll range would undo it. Only a pinned best roll needs
-      // to remain clamped; widened lesser rolls may deliberately sit outside
-      // the range so the filter does not become exact.
+      // to remain clamped; widened single-digit rolls may deliberately sit
+      // outside the range so the filter does not become exact.
       clampToBounds = pinExact
     } else if (item.rarity === ItemRarity.Unique) {
       filterDefault = {
