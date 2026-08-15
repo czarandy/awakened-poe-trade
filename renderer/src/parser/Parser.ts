@@ -206,15 +206,24 @@ function findInDatabase (item: ParserState) {
   } else if (item.rarity === ItemRarity.Unique && !item.isUnidentified) {
     info = ITEM_BY_TRANSLATED('UNIQUE', item.name)
   } else {
-    info = ITEM_BY_TRANSLATED('ITEM', item.baseType ?? item.name)
+    const baseName = item.baseType ?? item.name
+    info = findQualifiedBaseType(baseName, item.rawText)
+    if (info?.length && info[0].name !== baseName) {
+      if (item.baseType) {
+        item.baseType = info[0].name
+      } else {
+        item.name = info[0].name
+      }
+    }
   }
   if (!info?.length) {
     return err('item.unknown')
   }
   if (info[0].unique) {
-    const baseTypes = ITEM_BY_TRANSLATED('ITEM', item.baseType!)
+    const baseTypes = findQualifiedBaseType(item.baseType!, item.rawText)
     if (!baseTypes?.length) return err('item.unknown')
 
+    item.baseType = baseTypes[0].name
     const baseTypeRef = baseTypes[0].refName
     info = info.filter(info => info.unique!.base === baseTypeRef)
   }
@@ -230,6 +239,37 @@ function findInDatabase (item: ParserState) {
         item.info.unique.base)![0].craftable!.category
     }
   }
+}
+
+function findQualifiedBaseType (name: string, rawText: string): BaseType[] | undefined {
+  let info = ITEM_BY_TRANSLATED('ITEM', name)
+  if (info?.length || !hasQualifiedImplicitModifier(rawText)) return info
+
+  // Vestigial item type lines qualify the original base name, for example
+  // "Vestigial Brass Spirit Shield". Try progressively shorter suffixes so
+  // the same logic works with translated qualifier text.
+  let separator = name.indexOf(' ')
+  while (separator !== -1) {
+    name = name.slice(separator + 1)
+    info = ITEM_BY_TRANSLATED('ITEM', name)
+    if (info?.length) return info
+    separator = name.indexOf(' ')
+  }
+}
+
+function hasQualifiedImplicitModifier (rawText: string): boolean {
+  return rawText.split(/\r?\n/).some(line => {
+    if (!isModInfoLine(line)) return false
+
+    const modText = line.slice(1, -1).split('\u2014', 1)[0].trim()
+    return (
+      modText !== _$.IMPLICIT_MODIFIER &&
+      modText !== _$.CORRUPTED_IMPLICIT &&
+      !_$.EATER_IMPLICIT.test(modText) &&
+      !_$.EXARCH_IMPLICIT.test(modText) &&
+      modText.endsWith(_$.IMPLICIT_MODIFIER)
+    )
+  })
 }
 
 function parseMapTier (item: ParserState) {

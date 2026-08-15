@@ -66,6 +66,12 @@ export function parseModInfoLine (line: string): ModifierInfo {
         type = ModifierType.Crafted; break
     }
 
+    // Vestigial modifiers use a qualified implicit header, for example
+    // "Vestigial Implicit Modifier", rather than the plain implicit header.
+    if (match.groups!.type.endsWith(_$.IMPLICIT_MODIFIER)) {
+      type = ModifierType.Implicit
+    }
+
     switch (match.groups!.type) {
       case _$.PREFIX_MODIFIER:
       case _$.FRACTURED_PREFIX:
