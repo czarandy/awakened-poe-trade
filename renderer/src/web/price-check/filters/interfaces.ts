@@ -135,6 +135,9 @@ export interface StatFilter {
   }
   option?: {
     value: number // NOTE: mutable in UI
+    // values worth offering, fixed when the filter is created so picking one
+    // never hides the others; all known values are offered when absent
+    choices?: number[]
   }
   hidden?: string
   disabled: boolean // NOTE: mutable in UI

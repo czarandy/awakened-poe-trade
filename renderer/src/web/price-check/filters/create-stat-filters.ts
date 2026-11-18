@@ -636,7 +636,13 @@ function pushHasEmptyModifier (ctx: FiltersCreationContext) {
     tag: FilterTag.Pseudo,
     sources: [],
     option: {
-      value: hasEmptyModifier
+      value: hasEmptyModifier,
+      // the opposite slot searches for items unlike this one, so only the open
+      // slot is offered, plus "any" on a rare where six slots make widening a
+      // real fallback
+      choices: (ctx.item.rarity === ItemRarity.Rare)
+        ? [ItemHasEmptyModifier.Any, hasEmptyModifier]
+        : [hasEmptyModifier]
     }
   })
 }
