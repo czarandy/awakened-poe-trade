@@ -287,11 +287,8 @@ export default defineComponent({
             { text: t('filters.option_empty_prefix'), value: ItemHasEmptyModifier.Prefix },
             { text: t('filters.option_empty_suffix'), value: ItemHasEmptyModifier.Suffix }
           ]
-            .filter(option => {
-              if (option.value === props.filter.option!.value) return true
-              return option.value === ItemHasEmptyModifier.Any &&
-                props.item.rarity === ItemRarity.Rare
-            })
+            .filter(option =>
+              props.filter.option!.choices?.includes(option.value) ?? true)
         }
       }),
       fontSize: computed(() => AppConfig().fontSize),
