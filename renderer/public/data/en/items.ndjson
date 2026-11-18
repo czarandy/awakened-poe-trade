@@ -4712,3 +4712,4 @@
 {"name":"Zerphi's Last Breath","refName":"Zerphi's Last Breath","namespace":"UNIQUE","unique":{"base":"Grand Mana Flask","disenchantValue":106.41},"icon":"https://web.poecdn.com/gen/image/WzksMTQseyJmIjoiMkRJdGVtcy9GbGFza3MvWmVycGhpc0xhc3RCcmVhdGgiLCJ3IjoxLCJoIjoyLCJzY2FsZSI6MSwibGV2ZWwiOjF9XQ/bf8cb7b943/ZerphisLastBreath.png"}
 {"name":"Blood-filled Vessel","refName":"Blood-filled Vessel","namespace":"ITEM","icon":""}
 {"name":"Facetor's Lens","refName":"Facetor's Lens","namespace":"ITEM","icon":""}
+{"name":"Viscera","refName":"Viscera","namespace":"ITEM","icon":""}
